@@ -48,3 +48,1333 @@
   /* Scan line */
   body::after {
     content: '';
+    position: fixed;
+    top: -100%;
+    left: 0; right: 0;
+    height: 200%;
+    background: linear-gradient(transparent 49%, rgba(0,212,255,0.015) 50%, transparent 51%);
+    background-size: 100% 4px;
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes scanline { to { transform: translateY(50%); } }
+
+  .wrapper {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+    padding: 16px;
+    gap: 16px;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    animation: fadeDown 0.8s ease both;
+  }
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .arc-reactor {
+    width: 48px;
+    height: 48px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .arc-reactor svg { width: 100%; height: 100%; }
+  .arc-reactor .ring1 { animation: spin 4s linear infinite; transform-origin: center; }
+  .arc-reactor .ring2 { animation: spin 2.5s linear infinite reverse; transform-origin: center; }
+  .arc-reactor .core { animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse {
+    0%,100% { opacity:0.7; filter: drop-shadow(0 0 4px #00d4ff); }
+    50% { opacity:1; filter: drop-shadow(0 0 12px #00d4ff) drop-shadow(0 0 24px #00d4ff); }
+  }
+
+  .logo-text h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--arc);
+    text-shadow: 0 0 20px rgba(0,212,255,0.6);
+  }
+  .logo-text p {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 3px;
+    margin-top: 2px;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .status-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--ok);
+    box-shadow: 0 0 8px var(--ok);
+    animation: blink 2s ease-in-out infinite;
+  }
+  .dot.warn { background: var(--warn); box-shadow: 0 0 8px var(--warn); }
+  .dot.off { background: #333; box-shadow: none; animation: none; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .time-display {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    color: var(--arc);
+    letter-spacing: 3px;
+  }
+
+  /* ── MAIN GRID ── */
+  .main {
+    display: grid;
+    grid-template-columns: 260px 1fr 260px;
+    grid-template-rows: auto auto 1fr;
+    gap: 12px;
+    animation: fadeUp 0.9s ease both 0.2s;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+  /* ── PANEL ── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--arc), transparent);
+    opacity: 0.5;
+  }
+  .panel-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--arc);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── COMMAND CENTER (middle top) ── */
+  .cmd-center {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .voice-orb-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .voice-orb-wrap::before { content:''; position:absolute; top:0;left:0;right:0;height:2px; background:linear-gradient(90deg,transparent,var(--arc),transparent);opacity:0.5; }
+
+  .orb-container {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  .orb-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--arc);
+    opacity: 0.3;
+    animation: orbRing 3s linear infinite;
+  }
+  .orb-ring:nth-child(2) { inset: -12px; animation-delay: -1s; opacity: 0.15; }
+  .orb-ring:nth-child(3) { inset: -24px; animation-delay: -2s; opacity: 0.08; }
+  @keyframes orbRing {
+    0%,100% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.05); opacity: 0.5; }
+  }
+  .orb-ring.active { animation: orbRingActive 0.8s ease-in-out infinite alternate; }
+  @keyframes orbRingActive { from{transform:scale(1);opacity:0.4} to{transform:scale(1.1);opacity:0.9} }
+
+  .orb {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(0,212,255,0.25), rgba(0,20,60,0.9));
+    border: 2px solid var(--arc);
+    box-shadow: 0 0 30px rgba(0,212,255,0.2), inset 0 0 30px rgba(0,212,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    transition: all 0.3s;
+  }
+  .orb:hover, .orb.listening {
+    box-shadow: 0 0 60px rgba(0,212,255,0.5), inset 0 0 40px rgba(0,212,255,0.15);
+    background: radial-gradient(circle at 35% 35%, rgba(0,212,255,0.4), rgba(0,40,100,0.9));
+  }
+
+  .voice-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--arc);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .voice-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 24px;
+    margin-bottom: 16px;
+  }
+  .wave-bar {
+    width: 3px;
+    background: var(--arc);
+    border-radius: 2px;
+    opacity: 0.3;
+    animation: wavePulse 1.2s ease-in-out infinite;
+  }
+  .wave-bar:nth-child(1){height:8px;animation-delay:0s}
+  .wave-bar:nth-child(2){height:14px;animation-delay:0.1s}
+  .wave-bar:nth-child(3){height:20px;animation-delay:0.2s}
+  .wave-bar:nth-child(4){height:24px;animation-delay:0.3s}
+  .wave-bar:nth-child(5){height:18px;animation-delay:0.4s}
+  .wave-bar:nth-child(6){height:12px;animation-delay:0.5s}
+  .wave-bar:nth-child(7){height:8px;animation-delay:0.6s}
+  .wave-bar.active { opacity: 1; }
+  @keyframes wavePulse { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+
+  .cmd-input-wrap {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+  .cmd-input {
+    flex: 1;
+    background: rgba(0,212,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .cmd-input:focus {
+    border-color: var(--arc);
+    box-shadow: 0 0 16px rgba(0,212,255,0.15);
+  }
+  .cmd-input::placeholder { color: var(--muted); }
+  .cmd-btn {
+    background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(0,212,255,0.05));
+    border: 1px solid var(--arc);
+    border-radius: 3px;
+    padding: 10px 16px;
+    color: var(--arc);
+    font-family: 'Orbitron', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cmd-btn:hover {
+    background: rgba(0,212,255,0.2);
+    box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  /* Response panel */
+  .response-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    min-height: 140px;
+    position: relative;
+  }
+  .response-panel::before { content:''; position:absolute; top:0;left:0;right:0;height:2px; background:linear-gradient(90deg,transparent,var(--arc),transparent);opacity:0.5; }
+  .response-label {
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .response-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--ok);
+    line-height: 1.7;
+    min-height: 80px;
+  }
+  .cursor-blink {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--ok);
+    margin-left: 2px;
+    vertical-align: middle;
+    animation: cursorBlink 1s step-end infinite;
+  }
+  @keyframes cursorBlink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Quick commands */
+  .quick-cmds {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .qcmd {
+    background: rgba(0,212,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .qcmd:hover {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--arc);
+    color: var(--arc);
+  }
+
+  /* ── LEFT PANELS ── */
+  .left-col { grid-column: 1; grid-row: 1 / 4; display: flex; flex-direction: column; gap: 12px; }
+  .right-col { grid-column: 3; grid-row: 1 / 4; display: flex; flex-direction: column; gap: 12px; }
+  .bottom-row { grid-column: 2; display: flex; gap: 12px; }
+
+  /* System stats */
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .stat-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    color: var(--arc);
+  }
+  .stat-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(0,212,255,0.1);
+    border-radius: 2px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .stat-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--arc2), var(--arc));
+    box-shadow: 0 0 8px var(--arc);
+    transition: width 1s ease;
+  }
+  .stat-fill.warn { background: linear-gradient(90deg, #cc4400, var(--warn)); box-shadow: 0 0 8px var(--warn); }
+
+  /* Connection map */
+  .conn-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,212,255,0.06);
+  }
+  .conn-item:last-child { border-bottom: none; }
+  .conn-icon { font-size: 18px; width: 28px; text-align: center; }
+  .conn-info { flex: 1; }
+  .conn-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .conn-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .conn-status { font-family: 'Share Tech Mono', monospace; font-size: 10px; }
+  .conn-status.online { color: var(--ok); }
+  .conn-status.offline { color: var(--danger); }
+  .conn-status.pending { color: var(--warn); }
+
+  /* Activity log */
+  .log-item {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .log-time { color: var(--muted); flex-shrink: 0; }
+  .log-msg { color: var(--text); }
+  .log-msg.ok { color: var(--ok); }
+  .log-msg.warn { color: var(--warn); }
+  .log-msg.err { color: var(--danger); }
+
+  /* Smart home */
+  .device-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .device-card {
+    background: rgba(0,212,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .device-card:hover { background: rgba(0,212,255,0.08); border-color: var(--arc); }
+  .device-card.on { border-color: var(--ok); background: rgba(0,255,170,0.05); }
+  .device-card .dev-icon { font-size: 22px; margin-bottom: 4px; }
+  .device-card .dev-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .device-card .dev-state { font-family: 'Share Tech Mono', monospace; font-size: 10px; margin-top: 2px; }
+  .device-card.on .dev-state { color: var(--ok); }
+  .device-card:not(.on) .dev-state { color: var(--muted); }
+
+  /* Phone control */
+  .phone-actions { display: flex; flex-direction: column; gap: 6px; }
+  .phone-btn {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(0,212,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .phone-btn:hover { background: rgba(0,212,255,0.1); border-color: var(--arc); color: var(--arc); }
+  .phone-btn span { flex: 1; }
+  .phone-btn .icon { font-size: 16px; width: 22px; }
+
+  /* Setup steps */
+  .step-item {
+    display: flex; gap: 12px; margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--arc);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', monospace; font-size: 9px;
+    color: var(--arc); flex-shrink: 0; margin-top: 1px;
+  }
+  .step-num.done { background: var(--ok); border-color: var(--ok); color: #000; }
+  .step-content .step-title { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .step-content .step-desc { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  /* Bottom arch decoration */
+  .arch-bottom {
+    text-align: center;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: rgba(0,212,255,0.2);
+    letter-spacing: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* HEX corner decorations */
+  .panel::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 12px; height: 12px;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    opacity: 0.5;
+  }
+
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(2,13,26,0.92);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: #020d1a;
+    border: 1px solid var(--arc);
+    border-radius: 6px;
+    padding: 28px;
+    max-width: 560px; width: 90%;
+    box-shadow: 0 0 60px rgba(0,212,255,0.2);
+    animation: modalIn 0.3s ease;
+    position: relative;
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:none} }
+  .modal h2 {
+    font-family: 'Orbitron', monospace; font-size: 14px; letter-spacing: 4px;
+    color: var(--arc); margin-bottom: 18px;
+  }
+  .modal p { font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--muted); line-height: 1.8; margin-bottom: 10px; }
+  .modal code {
+    display: block; background: rgba(0,212,255,0.06); border: 1px solid var(--border);
+    border-radius: 3px; padding: 10px 14px;
+    font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--ok);
+    margin: 8px 0; white-space: pre-wrap; word-break: break-all;
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 16px;
+    background: none; border: 1px solid var(--border); border-radius: 3px;
+    color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px 8px;
+    transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* Responsive */
+  @media(max-width:1100px){
+    .main{ grid-template-columns: 220px 1fr; grid-template-rows: auto auto 1fr auto; }
+    .right-col{ grid-column: 1; grid-row: 4; }
+    .bottom-row{ grid-column: 2; }
+  }
+  @media(max-width:720px){
+    .main{ grid-template-columns: 1fr; }
+    .left-col,.right-col,.cmd-center,.bottom-row{ grid-column: 1; grid-row: auto; }
+  }
+
+  /* ── API KEY BANNER ── */
+  .api-banner {
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,107,0,0.08);
+    border: 1px solid rgba(255,107,0,0.3);
+    border-radius: 4px;
+    padding: 10px 16px;
+    margin-bottom: 0;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--warn);
+  }
+  .api-banner.connected { background: rgba(0,255,170,0.06); border-color: rgba(0,255,170,0.25); color: var(--ok); }
+  .api-key-input {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,107,0,0.4);
+    border-radius: 3px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    outline: none;
+    letter-spacing: 1px;
+  }
+  .api-key-input:focus { border-color: var(--arc); }
+  .api-save-btn {
+    background: rgba(255,107,0,0.15);
+    border: 1px solid var(--warn);
+    border-radius: 3px;
+    padding: 6px 12px;
+    color: var(--warn);
+    font-family: 'Orbitron', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .api-save-btn:hover { background: rgba(255,107,0,0.3); }
+  .api-save-btn.saved { background: rgba(0,255,170,0.1); border-color: var(--ok); color: var(--ok); }
+
+  /* ── VOICE LISTENING ANIMATION ── */
+  .orb.listening { animation: orbPulse 0.6s ease-in-out infinite alternate; }
+  @keyframes orbPulse {
+    from { box-shadow: 0 0 30px rgba(255,50,50,0.4), inset 0 0 30px rgba(255,50,50,0.1); background: radial-gradient(circle at 35% 35%, rgba(255,100,100,0.3), rgba(60,0,0,0.9)); }
+    to   { box-shadow: 0 0 70px rgba(255,50,50,0.8), inset 0 0 50px rgba(255,50,50,0.2); background: radial-gradient(circle at 35% 35%, rgba(255,100,100,0.5), rgba(80,0,0,0.9)); }
+  }
+
+  /* ── COPY CODE BUTTON ── */
+  .modal code { position: relative; }
+  .copy-btn {
+    position: absolute; top: 6px; right: 6px;
+    background: rgba(0,212,255,0.1); border: 1px solid var(--border);
+    border-radius: 3px; padding: 3px 8px;
+    color: var(--muted); font-family: 'Orbitron', monospace; font-size: 8px;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+  }
+  .copy-btn:hover { background: rgba(0,212,255,0.25); color: var(--arc); }
+
+  /* ── VOICE TRANSCRIPT ── */
+  .voice-transcript {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: rgba(0,212,255,0.5);
+    text-align: center;
+    min-height: 16px;
+    margin-top: 4px;
+    letter-spacing: 1px;
+    font-style: italic;
+  }
+</style>
+
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <div class="arc-reactor">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="#00d4ff" stroke-width="0.5" opacity="0.3"/>
+          <g class="ring1">
+            <circle cx="24" cy="24" r="18" stroke="#00d4ff" stroke-width="0.8" stroke-dasharray="4 8" opacity="0.5"/>
+          </g>
+          <g class="ring2">
+            <circle cx="24" cy="24" r="13" stroke="#0088cc" stroke-width="1" stroke-dasharray="3 5" opacity="0.6"/>
+          </g>
+          <polygon class="core" points="24,14 31,20 29,29 19,29 17,20" fill="rgba(0,212,255,0.15)" stroke="#00d4ff" stroke-width="1"/>
+          <circle cx="24" cy="24" r="5" fill="#00d4ff" opacity="0.8" class="core"/>
+          <circle cx="24" cy="24" r="3" fill="#ffffff" opacity="0.9"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <h1>J.A.R.V.I.S.</h1>
+        <p>JUST A RATHER VERY INTELLIGENT SYSTEM</p>
+      </div>
+    </div>
+    <div class="status-bar">
+      <div class="status-dot"><div class="dot" id="dot-laptop"></div><span id="lbl-laptop">LAPTOP</span></div>
+      <div class="status-dot"><div class="dot warn" id="dot-phone"></div><span id="lbl-phone">PHONE PAIRING</span></div>
+      <div class="status-dot"><div class="dot off" id="dot-home"></div><span id="lbl-home">SMARTHOME</span></div>
+      <div class="time-display" id="clock">00:00:00</div>
+    </div>
+  </header>
+
+  <!-- API KEY BANNER -->
+  <div class="api-banner" id="apiBanner">
+    <span>⚠ API KEY:</span>
+    <input class="api-key-input" id="apiKeyInput" type="password" placeholder="Paste your Anthropic API key (sk-ant-…)" autocomplete="off"/>
+    <button class="api-save-btn" id="apiSaveBtn" onclick="saveApiKey()">CONNECT</button>
+    <span id="apiStatus" style="white-space:nowrap">NOT SET</span>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- LEFT COL -->
+    <div class="left-col">
+
+      <!-- System Stats -->
+      <div class="panel">
+        <div class="panel-title">System Status</div>
+        <div class="stat-row"><span class="stat-label">CPU</span><span class="stat-value" id="cpu-val">34%</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="cpu-bar" style="width:34%"></div></div>
+        <div class="stat-row"><span class="stat-label">RAM</span><span class="stat-value" id="ram-val">61%</span></div>
+        <div class="stat-bar"><div class="stat-fill warn" id="ram-bar" style="width:61%"></div></div>
+        <div class="stat-row"><span class="stat-label">DISK</span><span class="stat-value" id="disk-val">48%</span></div>
+        <div class="stat-bar"><div class="stat-fill" id="disk-bar" style="width:48%"></div></div>
+        <div class="stat-row"><span class="stat-label">NET</span><span class="stat-value">↑ 1.2 MB/s</span></div>
+        <div class="stat-bar"><div class="stat-fill" style="width:22%"></div></div>
+      </div>
+
+      <!-- Connections -->
+      <div class="panel">
+        <div class="panel-title">Connections</div>
+        <div class="conn-item">
+          <div class="conn-icon">💻</div>
+          <div class="conn-info">
+            <div class="conn-name">Laptop (Windows)</div>
+            <div class="conn-sub">192.168.1.100 · PORT 8765</div>
+          </div>
+          <div class="conn-status online">ONLINE</div>
+        </div>
+        <div class="conn-item">
+          <div class="conn-icon">📱</div>
+          <div class="conn-info">
+            <div class="conn-name">Android Phone</div>
+            <div class="conn-sub">ADB / Wi-Fi Bridge</div>
+          </div>
+          <div class="conn-status pending">PAIRING</div>
+        </div>
+        <div class="conn-item">
+          <div class="conn-icon">🏠</div>
+          <div class="conn-info">
+            <div class="conn-name">Smart Home Hub</div>
+            <div class="conn-sub">Home Assistant · MQTT</div>
+          </div>
+          <div class="conn-status offline">OFFLINE</div>
+        </div>
+        <div class="conn-item">
+          <div class="conn-icon">🤖</div>
+          <div class="conn-info">
+            <div class="conn-name">Claude AI Brain</div>
+            <div class="conn-sub">api.anthropic.com</div>
+          </div>
+          <div class="conn-status" id="aiConnStatus">NOT SET</div>
+        </div>
+      </div>
+
+      <!-- Setup Guide -->
+      <div class="panel">
+        <div class="panel-title">Setup Steps</div>
+        <div class="step-item">
+          <div class="step-num done">✓</div>
+          <div class="step-content">
+            <div class="step-title">Open Dashboard</div>
+            <div class="step-desc">You're here! Hosted on GitHub Pages</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" id="step2num">2</div>
+          <div class="step-content">
+            <div class="step-title">Add API Key</div>
+            <div class="step-desc">Paste Anthropic key in banner above</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Pair Phone via ADB</div>
+            <div class="step-desc">Enable Dev Mode → USB Debug → adb connect</div>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <div class="step-title">Connect Smart Home</div>
+            <div class="step-desc">Install Home Assistant + MQTT broker</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTER: COMMAND -->
+    <div class="cmd-center">
+      <!-- Voice Orb -->
+      <div class="voice-orb-wrap">
+        <div class="orb-container" id="orbContainer" onclick="toggleListen()">
+          <div class="orb-ring" id="ring1"></div>
+          <div class="orb-ring" id="ring2"></div>
+          <div class="orb-ring" id="ring3"></div>
+          <div class="orb" id="mainOrb">🎙️</div>
+        </div>
+        <div class="voice-status" id="voiceStatus">CLICK TO ACTIVATE VOICE</div>
+        <div class="voice-wave">
+          <div class="wave-bar" id="wb1"></div>
+          <div class="wave-bar" id="wb2"></div>
+          <div class="wave-bar" id="wb3"></div>
+          <div class="wave-bar" id="wb4"></div>
+          <div class="wave-bar" id="wb5"></div>
+          <div class="wave-bar" id="wb6"></div>
+          <div class="wave-bar" id="wb7"></div>
+        </div>
+        <div class="voice-transcript" id="voiceTranscript"></div>
+        <div class="cmd-input-wrap" style="margin-top:8px">
+          <input class="cmd-input" id="cmdInput" placeholder="Type a command or speak…" onkeydown="if(event.key==='Enter')sendCommand()"/>
+          <button class="cmd-btn" onclick="sendCommand()">EXECUTE</button>
+        </div>
+      </div>
+
+      <!-- Response -->
+      <div class="response-panel">
+        <div class="response-label">◈ J.A.R.V.I.S. RESPONSE</div>
+        <div class="response-text" id="responseText">
+          Good day. All systems nominal. I am ready to assist you. Please set your API key above, then speak a command or type one below.<span class="cursor-blink"></span>
+        </div>
+      </div>
+
+      <!-- Quick Commands -->
+      <div class="panel">
+        <div class="panel-title">Quick Commands</div>
+        <div class="quick-cmds">
+          <div class="qcmd" onclick="runQuick('Open Chrome')">🌐 Open Chrome</div>
+          <div class="qcmd" onclick="runQuick('Take a screenshot')">📸 Screenshot</div>
+          <div class="qcmd" onclick="runQuick('Open terminal')">💻 Terminal</div>
+          <div class="qcmd" onclick="runQuick('Lock the screen')">🔒 Lock Screen</div>
+          <div class="qcmd" onclick="runQuick('What time is it?')">🕐 System Time</div>
+          <div class="qcmd" onclick="runQuick('Show running processes')">⚙️ Processes</div>
+          <div class="qcmd" onclick="runQuick('Turn on living room lights')">💡 Lights ON</div>
+          <div class="qcmd" onclick="runQuick('Set phone to silent mode')">📵 Phone Silent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COL -->
+    <div class="right-col">
+
+      <!-- Phone Control -->
+      <div class="panel">
+        <div class="panel-title">Phone Control</div>
+        <div class="phone-actions">
+          <div class="phone-btn" onclick="showModal('phone-adb')">
+            <span class="icon">📱</span>
+            <span>Connect via ADB</span>
+            <span>→</span>
+          </div>
+          <div class="phone-btn" onclick="showModal('phone-wifi')">
+            <span class="icon">📶</span>
+            <span>Wi-Fi Bridge Setup</span>
+            <span>→</span>
+          </div>
+          <div class="phone-btn" onclick="runQuick('Send notification to phone: JARVIS connected')">
+            <span class="icon">🔔</span>
+            <span>Send Notification</span>
+            <span>→</span>
+          </div>
+          <div class="phone-btn" onclick="runQuick('Read latest SMS')">
+            <span class="icon">💬</span>
+            <span>Read SMS</span>
+            <span>→</span>
+          </div>
+          <div class="phone-btn" onclick="runQuick('Get phone battery level via ADB')">
+            <span class="icon">🔋</span>
+            <span>Battery Status</span>
+            <span>→</span>
+          </div>
+          <div class="phone-btn" onclick="runQuick('Stream phone screen to laptop using scrcpy')">
+            <span class="icon">🖥️</span>
+            <span>Mirror Screen</span>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Smart Home -->
+      <div class="panel">
+        <div class="panel-title">Smart Home</div>
+        <div class="device-grid">
+          <div class="device-card on" id="dev-light1" onclick="toggleDevice('dev-light1','Living Room Light')">
+            <div class="dev-icon">💡</div>
+            <div class="dev-name">Living Room</div>
+            <div class="dev-state">ON</div>
+          </div>
+          <div class="device-card" id="dev-light2" onclick="toggleDevice('dev-light2','Bedroom Light')">
+            <div class="dev-icon">🌙</div>
+            <div class="dev-name">Bedroom</div>
+            <div class="dev-state">OFF</div>
+          </div>
+          <div class="device-card on" id="dev-ac" onclick="toggleDevice('dev-ac','Air Conditioner')">
+            <div class="dev-icon">❄️</div>
+            <div class="dev-name">AC · 22°C</div>
+            <div class="dev-state">ON</div>
+          </div>
+          <div class="device-card" id="dev-tv" onclick="toggleDevice('dev-tv','Smart TV')">
+            <div class="dev-icon">📺</div>
+            <div class="dev-name">Smart TV</div>
+            <div class="dev-state">OFF</div>
+          </div>
+          <div class="device-card" id="dev-door" onclick="toggleDevice('dev-door','Front Door')">
+            <div class="dev-icon">🚪</div>
+            <div class="dev-name">Front Door</div>
+            <div class="dev-state">LOCKED</div>
+          </div>
+          <div class="device-card on" id="dev-cam" onclick="toggleDevice('dev-cam','Security Cam')">
+            <div class="dev-icon">📷</div>
+            <div class="dev-name">Security Cam</div>
+            <div class="dev-state">ACTIVE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log -->
+      <div class="panel" style="flex:1;">
+        <div class="panel-title">Activity Log</div>
+        <div id="activityLog">
+          <div class="log-item"><span class="log-time">--:--</span><span class="log-msg ok">System boot complete</span></div>
+          <div class="log-item"><span class="log-time">--:--</span><span class="log-msg">Dashboard loaded</span></div>
+          <div class="log-item"><span class="log-time">--:--</span><span class="log-msg warn">API key not set — enter above</span></div>
+          <div class="log-item"><span class="log-time">--:--</span><span class="log-msg warn">Phone pairing pending</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW -->
+    <div class="bottom-row">
+      <div class="panel" style="flex:1;">
+        <div class="panel-title">Architecture Overview</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);line-height:2;">
+          📱 Phone App (React Native / Termux)
+          &nbsp;→ WebSocket → 💻 jarvis_server.py (Windows)
+          &nbsp;→ Claude AI API → NLP Command Parser
+          &nbsp;→ [pyautogui · subprocess · adb · paho-mqtt]
+          &nbsp;→ Laptop Control · Phone · 🏠 Smart Home
+        </div>
+      </div>
+      <div class="panel" style="flex:1;">
+        <div class="panel-title">Setup Files</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="cmd-btn" onclick="showModal('server-code')" style="font-size:9px;">💻 SERVER.PY</button>
+          <button class="cmd-btn" onclick="showModal('config')">⚙️ CONFIG</button>
+          <button class="cmd-btn" onclick="showModal('phone-app')">📱 PHONE APP</button>
+          <button class="cmd-btn" onclick="showModal('home-assist')">🏠 HOME SETUP</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="arch-bottom">J.A.R.V.I.S. SYSTEM v2.1 · POWERED BY CLAUDE AI · ALL SYSTEMS MONITORED</div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modalOverlay" onclick="hideModal(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="hideModal()">✕</button>
+    <h2 id="modalTitle">SETUP GUIDE</h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ── API KEY MANAGEMENT ──
+let apiKey = sessionStorage.getItem('jarvis_api_key') || '';
+function saveApiKey(){
+  const val = document.getElementById('apiKeyInput').value.trim();
+  if(!val){ alert('Please paste your Anthropic API key.'); return; }
+  apiKey = val;
+  sessionStorage.setItem('jarvis_api_key', apiKey);
+  updateApiUI(true);
+  addLog('Claude AI connected','ok');
+}
+function updateApiUI(connected){
+  const banner = document.getElementById('apiBanner');
+  const btn = document.getElementById('apiSaveBtn');
+  const status = document.getElementById('apiStatus');
+  const aiConn = document.getElementById('aiConnStatus');
+  const step2 = document.getElementById('step2num');
+  if(connected){
+    banner.classList.add('connected');
+    btn.classList.add('saved');
+    btn.textContent = 'CONNECTED';
+    status.textContent = '✓ ACTIVE';
+    document.getElementById('apiKeyInput').value = apiKey.substring(0,12)+'…';
+    aiConn.textContent = 'ONLINE';
+    aiConn.className = 'conn-status online';
+    step2.classList.add('done');
+    step2.textContent = '✓';
+  }
+}
+if(apiKey) updateApiUI(true);
+
+// ── CLOCK ──
+function tick(){
+  const now=new Date();
+  document.getElementById('clock').textContent=
+    [now.getHours(),now.getMinutes(),now.getSeconds()]
+    .map(n=>String(n).padStart(2,'0')).join(':');
+}
+setInterval(tick,1000); tick();
+
+// ── FAKE STATS ──
+function jitter(base,range){return Math.max(0,Math.min(100,base+Math.round((Math.random()-0.5)*range)));}
+setInterval(()=>{
+  const cpu=jitter(34,20), ram=jitter(61,10), disk=jitter(48,5);
+  document.getElementById('cpu-val').textContent=cpu+'%';
+  document.getElementById('ram-val').textContent=ram+'%';
+  document.getElementById('disk-val').textContent=disk+'%';
+  document.getElementById('cpu-bar').style.width=cpu+'%';
+  document.getElementById('ram-bar').style.width=ram+'%';
+  document.getElementById('disk-bar').style.width=disk+'%';
+},2500);
+
+// ── ACTIVITY LOG ──
+function addLog(msg,cls=''){
+  const log=document.getElementById('activityLog');
+  const now=new Date();
+  const t=[now.getHours(),now.getMinutes()].map(n=>String(n).padStart(2,'0')).join(':');
+  const div=document.createElement('div');div.className='log-item';
+  div.innerHTML=`<span class="log-time">${t}</span><span class="log-msg ${cls}">${msg}</span>`;
+  log.prepend(div);
+  while(log.children.length>14)log.removeChild(log.lastChild);
+}
+
+// ── REAL WEB SPEECH API ──
+let recognition = null;
+let listening = false;
+
+function setupSpeech(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    addLog('Voice: browser not supported — use Chrome','warn');
+    return null;
+  }
+  const r = new SpeechRecognition();
+  r.continuous = false;
+  r.interimResults = true;
+  r.lang = 'en-US';
+
+  r.onresult = (e) => {
+    let interim = '', final = '';
+    for(let i = e.resultIndex; i < e.results.length; i++){
+      if(e.results[i].isFinal) final += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    document.getElementById('voiceTranscript').textContent = interim || final;
+    if(final){
+      document.getElementById('cmdInput').value = final.trim();
+      document.getElementById('voiceTranscript').textContent = '"' + final.trim() + '"';
+    }
+  };
+  r.onend = () => {
+    if(listening){
+      listening = false;
+      stopListenUI();
+      const val = document.getElementById('cmdInput').value.trim();
+      if(val) sendCommand();
+    }
+  };
+  r.onerror = (e) => {
+    addLog('Voice error: '+e.error,'warn');
+    listening = false;
+    stopListenUI();
+  };
+  return r;
+}
+
+function toggleListen(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    addLog('Speech recognition not supported. Use Chrome.','warn');
+    setResponse('Voice recognition requires Google Chrome. Please type your command instead.');
+    return;
+  }
+  if(listening){
+    listening = false;
+    if(recognition) recognition.stop();
+    stopListenUI();
+  } else {
+    listening = true;
+    recognition = setupSpeech();
+    if(recognition){
+      recognition.start();
+      startListenUI();
+      addLog('Voice input activated','ok');
+    }
+  }
+}
+
+function startListenUI(){
+  document.getElementById('mainOrb').textContent='🔴';
+  document.getElementById('mainOrb').classList.add('listening');
+  document.getElementById('voiceStatus').textContent='LISTENING… SPEAK NOW';
+  document.querySelectorAll('.wave-bar').forEach(b=>b.classList.add('active'));
+  document.querySelectorAll('.orb-ring').forEach(r=>r.classList.add('active'));
+  document.getElementById('voiceTranscript').textContent='';
+}
+
+function stopListenUI(){
+  document.getElementById('mainOrb').textContent='🎙️';
+  document.getElementById('mainOrb').classList.remove('listening');
+  document.getElementById('voiceStatus').textContent='CLICK TO ACTIVATE VOICE';
+  document.querySelectorAll('.wave-bar').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.orb-ring').forEach(r=>r.classList.remove('active'));
+}
+
+// ── SEND COMMAND ──
+async function sendCommand(){
+  const input=document.getElementById('cmdInput');
+  const text=input.value.trim();
+  if(!text) return;
+  input.value='';
+  document.getElementById('voiceTranscript').textContent='';
+  addLog('CMD: '+text);
+  setResponse('Processing: "'+text+'" …');
+
+  if(!apiKey){
+    setResponse('⚠ No API key set. Please paste your Anthropic key in the banner at the top.\n\nIn the meantime, here is the offline response:\n\n'+getFallback(text));
+    addLog('API key missing — offline mode','warn');
+    return;
+  }
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:`You are J.A.R.V.I.S., an AI assistant for a Windows laptop, Android phone, and smart home system.
+You speak like the Marvel AI — calm, precise, British wit.
+When given a command, respond with:
+1. What action you are taking (briefly)
+2. The exact Windows command / ADB command / Python code to execute it (in a code block)
+3. A one-line witty remark
+
+Keep responses concise. Always include the actual runnable command.`,
+        messages:[{role:'user',content:text}]
+      })
+    });
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      throw new Error(err.error?.message || 'API error '+res.status);
+    }
+    const data=await res.json();
+    const reply=data.content?.map(c=>c.text||'').join('\n')||'No response received.';
+    setResponse(reply);
+    addLog('Response received','ok');
+  } catch(e){
+    console.error('JARVIS API Error:', e);
+    addLog('Error: '+e.message,'err');
+    if(e.message && (e.message.includes('401')||e.message.includes('auth'))){
+      setResponse('⚠ Invalid API key.\n\nPlease check your Anthropic key and re-enter it in the banner at the top.');
+      addLog('Auth error — re-enter API key','err');
+    } else if(e.message && e.message.includes('Failed to fetch')){
+      setResponse('⚠ Network error — cannot reach Claude API.\n\nPossible causes:\n1. No internet connection\n2. API key not entered (tap the banner at top)\n3. Firewall blocking the request\n\nFallback response:\n\n'+getFallback(text));
+      addLog('Network error — check internet','err');
+    } else if(e.message && e.message.includes('CORS')){
+      setResponse('⚠ CORS error detected.\n\nThis usually means the app needs to be rebuilt with the latest MainActivity.java fix.\n\nFallback:\n\n'+getFallback(text));
+      addLog('CORS error — rebuild APK','err');
+    } else {
+      setResponse('⚠ Claude unreachable.\n\nError: '+e.message+'\n\nFallback:\n\n'+getFallback(text));
+      addLog('API error: '+e.message,'err');
+    }
+  }
+}
+
+function runQuick(cmd){
+  document.getElementById('cmdInput').value=cmd;
+  sendCommand();
+}
+
+function setResponse(txt){
+  const el=document.getElementById('responseText');
+  el.innerHTML='';
+  let i=0;
+  const blink='<span class="cursor-blink"></span>';
+  function type(){
+    if(i<=txt.length){
+      el.innerHTML=txt.substring(0,i).replace(/\n/g,'<br>')+blink;
+      i++; setTimeout(type,i<50?12:6);
+    }
+  }
+  type();
+}
+
+function getFallback(cmd){
+  const c=cmd.toLowerCase();
+  if(c.includes('chrome')||c.includes('browser'))
+    return 'Opening Chrome.\n\nWindows CMD:\nstart chrome\n\nRight away, sir.';
+  if(c.includes('screenshot'))
+    return 'Taking screenshot.\n\nPython:\nimport pyautogui\npyautogui.screenshot("screenshot.png")\n\nCapturing the moment.';
+  if(c.includes('terminal')||c.includes('cmd'))
+    return 'Launching terminal.\n\nWindows CMD:\nstart cmd\n\nYour command awaits.';
+  if(c.includes('lock'))
+    return 'Locking screen.\n\nWindows CMD:\nrundll32.exe user32.dll,LockWorkStation\n\nSecurity engaged.';
+  if(c.includes('light'))
+    return 'Toggling smart lights.\n\nMQTT Publish:\ntopic: home/lights/living\npayload: {"state":"ON"}\n\nShedding some light on the matter.';
+  if(c.includes('phone')||c.includes('sms')||c.includes('adb'))
+    return 'Accessing phone via ADB.\n\nADB Command:\nadb shell input keyevent 26\n\nPhone command dispatched.';
+  if(c.includes('time'))
+    return 'Current system time.\n\nPython:\nfrom datetime import datetime\nprint(datetime.now())\n\nTime, as always, marches on.';
+  if(c.includes('silent'))
+    return 'Setting phone to silent.\n\nADB Command:\nadb shell media volume --stream 2 --set 0\n\nSilence achieved, sir.';
+  return `Command received: "${cmd}"\n\nExecuting via jarvis_server.py on your Windows machine.\n\nAll systems standing by, sir.`;
+}
+
+// ── DEVICE TOGGLE ──
+function toggleDevice(id,name){
+  const card=document.getElementById(id);
+  const isOn=card.classList.toggle('on');
+  const state=card.querySelector('.dev-state');
+  state.textContent=isOn?'ON':'OFF';
+  if(id==='dev-door') state.textContent=isOn?'UNLOCKED':'LOCKED';
+  if(id==='dev-cam') state.textContent=isOn?'ACTIVE':'OFF';
+  addLog(name+': '+(isOn?'ON':'OFF'), isOn?'ok':'warn');
+}
+
+// ── MODALS ──
+const MODALS={
+  'server-code':{
+    title:'LAPTOP SERVER (jarvis_server.py)',
+    body:`<p>Save this as <b>jarvis_server.py</b> and run: <b>python jarvis_server.py</b></p>
+<code>pip install websockets pyautogui anthropic paho-mqtt adbutils</code>
+<code>import asyncio, websockets, subprocess, pyautogui, json, anthropic
+
+ANTHROPIC_KEY = "your-api-key-here"
+client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
+
+async def handler(ws):
+    async for message in ws:
+        cmd = json.loads(message)
+        result = await process_command(cmd)
+        await ws.send(json.dumps({"result": result}))
+
+async def process_command(cmd):
+    text = cmd.get("text","")
+    resp = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=500,
+        system="Return only a Windows CMD or Python command to execute.",
+        messages=[{"role":"user","content":text}]
+    )
+    code = resp.content[0].text
+    result = subprocess.run(code, shell=True, capture_output=True, text=True)
+    return result.stdout or result.stderr
+
+asyncio.run(websockets.serve(handler, "0.0.0.0", 8765))</code>
+<p>Your phone connects to ws://YOUR_PC_IP:8765</p>`
+  },
+  'config':{
+    title:'CONFIG.JSON',
+    body:`<p>Create this file next to jarvis_server.py</p>
+<code>{
+  "anthropic_api_key": "sk-ant-YOUR-KEY-HERE",
+  "server_port": 8765,
+  "adb_device_ip": "192.168.1.XXX:5555",
+  "mqtt_broker": "192.168.1.1",
+  "mqtt_port": 1883,
+  "allowed_commands": ["open", "close", "screenshot", "lock"],
+  "smart_home": {
+    "lights": "home/lights",
+    "ac": "home/ac",
+    "tv": "home/tv"
+  }
+}</code>`
+  },
+  'phone-adb':{
+    title:'CONNECT PHONE VIA ADB',
+    body:`<p>Step 1: Enable Developer Options on Android</p>
+<code>Settings → About Phone → Tap "Build Number" 7 times</code>
+<p>Step 2: Enable USB Debugging &amp; Wireless Debugging</p>
+<code>Developer Options → USB Debugging: ON
+Developer Options → Wireless Debugging: ON</code>
+<p>Step 3: On your laptop, install ADB and connect</p>
+<code>winget install Google.PlatformTools
+adb tcpip 5555
+adb connect YOUR_PHONE_IP:5555
+adb devices</code>
+<p>Step 4: Now JARVIS can control your phone!</p>
+<code>adb shell input tap 500 500
+adb shell screencap /sdcard/screen.png
+adb pull /sdcard/screen.png
+adb shell am start -a android.intent.action.VIEW -d "https://google.com"</code>`
+  },
+  'phone-wifi':{
+    title:'WI-FI BRIDGE SETUP',
+    body:`<p>Install Termux on your Android phone and run a WebSocket client:</p>
+<code>pkg install python nodejs
+pip install websockets</code>
+<code>import asyncio, websockets, json
+
+LAPTOP_IP = "192.168.1.100"
+LAPTOP_PORT = 8765
+
+async def speak_to_jarvis(command):
+    uri = f"ws://{LAPTOP_IP}:{LAPTOP_PORT}"
+    async with websockets.connect(uri) as ws:
+        await ws.send(json.dumps({"text": command}))
+        response = await ws.recv()
+        return json.loads(response)
+
+asyncio.run(speak_to_jarvis("Open Chrome"))</code>
+<p>Both devices must be on the same Wi-Fi. For remote: use ngrok on the laptop.</p>
+<code>ngrok tcp 8765</code>`
+  },
+  'phone-app':{
+    title:'PHONE APP OPTIONS',
+    body:`<p>3 ways to use JARVIS from your phone:</p>
+<p><b>Option A — Termux (easiest, Android)</b></p>
+<code>Install Termux → run the Python WebSocket client
+Use Termux:Widget for home screen buttons</code>
+<p><b>Option B — React Native App</b></p>
+<code>npx react-native init JarvisApp
+# WebSocket API → laptop server
+# Voice: @react-native-voice/voice</code>
+<p><b>Option C — Web App (phone browser)</b></p>
+<code>Open this dashboard in your phone browser:
+http://YOUR_LAPTOP_IP:8080</code>`
+  },
+  'home-assist':{
+    title:'SMART HOME SETUP',
+    body:`<p>Install Home Assistant on a Raspberry Pi or PC:</p>
+<code>curl -Lo installer.py https://get.homeassistant.io
+python3 installer.py</code>
+<p>Install MQTT broker (Mosquitto):</p>
+<code>winget install EclipseFoundation.Mosquitto
+net start mosquitto</code>
+<p>Connect JARVIS to smart home via MQTT:</p>
+<code>import paho.mqtt.client as mqtt
+
+def control_device(device, state):
+    client = mqtt.Client()
+    client.connect("localhost", 1883)
+    client.publish(f"home/{device}",
+                   json.dumps({"state": state}))
+
+control_device("lights/living", "ON")
+control_device("ac", json.dumps({"temp": 22}))</code>
+<p>Compatible: Philips Hue, TP-Link Kasa, Tuya, Zigbee, Z-Wave</p>`
+  }
+};
+
+function showModal(key){
+  const m=MODALS[key];
+  if(!m)return;
+  document.getElementById('modalTitle').textContent=m.title;
+  document.getElementById('modalBody').innerHTML=m.body;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function hideModal(e){
+  if(!e||e.target===document.getElementById('modalOverlay'))
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+</script>
+</body>
+</html>
